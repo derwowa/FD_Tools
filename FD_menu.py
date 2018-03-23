@@ -12,6 +12,7 @@ import importlib
 class fdMenu(bpy.types.Menu):
     bl_label="framedivision Menu"
     bl_idname="view3d.fd_menu"
+   
     
     global arr_scripts, fd_scriptPath
     if os.name == "posix":
@@ -19,7 +20,7 @@ class fdMenu(bpy.types.Menu):
         fd_scriptPath=fd_basePath+"/scripts"
         exec(compile(open(fd_basePath+"/fd_runScriptOperator.py").read(), fd_basePath+"fd_runScriptOperator.py", 'exec'))
     else:
-        fd_basePath="C:\\Users\\axel\\OneDrive\\Blender\\Plugins\\FD_Menu"
+        fd_basePath="C:\\Users\\axel\\OneDrive\\Blender\\Git Repository FD\\FD_Tools"
         fd_scriptPath=fd_basePath+"\\scripts"
         exec(compile(open(fd_basePath+"\\fd_runScriptOperator.py").read(), fd_basePath+"\\fd_runScriptOperator.py", 'exec'))
         
