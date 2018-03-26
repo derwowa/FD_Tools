@@ -37,6 +37,7 @@ class fdMenu(bpy.types.Menu):
     
     scriptName = bpy.props.StringProperty()
     
+    
     def draw(self, context):
         layout = self.layout
         layout.separator()
@@ -53,7 +54,8 @@ class fdMenu(bpy.types.Menu):
 
 def register():
     bpy.utils.register_class(fdMenu)
-    bpy.ops.wm.call_menu(name=fdMenu.bl_idname)
+    # to run from texteditor enable the line below
+    #bpy.ops.wm.call_menu(name=fdMenu.bl_idname)
     
 def unregister():
     bpy.utils.unregister_class(fdMenu)
