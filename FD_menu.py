@@ -21,9 +21,11 @@ class fdMenu(bpy.types.Menu):
         exec(compile(open(fd_basePath+"/fd_runScriptOperator.py").read(), fd_basePath+"fd_runScriptOperator.py", 'exec'))
     else:
         fd_basePath="C:\\Users\\axel\\OneDrive\\Blender\\Git Repository FD\\FD_Tools"
-        fd_scriptPath=fd_basePath+"\\scripts"
-        exec(compile(open(fd_basePath+"\\fd_runScriptOperator.py").read(), fd_basePath+"\\fd_runScriptOperator.py", 'exec'))
+        fd_scriptPath=fd_basePath+"\\scripts"       
         
+        print("Starting fd Menu global")
+        exec(compile(open(fd_basePath+"\\fd_runScriptOperator.py").read(), fd_basePath+"\\fd_runScriptOperator.py", 'exec'))
+
     
     #create an array and store all the scriptnames in it
     

@@ -3,8 +3,8 @@ import math
 from mathutils import Vector
 import collections
 
- 
-class InterfaceVars(bpy.types.PropertyGroup):
+
+class FDAlignVars(bpy.types.PropertyGroup):
     align_x = bpy.props.EnumProperty(
         items=[
             ('min', 'min', 'min', '', 0),
@@ -29,25 +29,19 @@ class InterfaceVars(bpy.types.PropertyGroup):
         ],
         default='min'
     )
-
-class ClosePanel(bpy.types.Operator):    
-    bl_idname="object.close_panel"
-    bl_label="close panel"
-    
-    def execute(self, context):
-        unregister()
-        return {'FINISHED'}
     
 class AlignCursor(bpy.types.Operator):
 
     bl_idname = "object.fd_align"
     bl_label = "AlignCursor"
+    bl_options = {'REGISTER', 'UNDO'}
+    
         
     def execute(self, context):
                 
-        alignX = context.window_manager.interface_vars.align_x
-        alignY = context.window_manager.interface_vars.align_y
-        alignZ = context.window_manager.interface_vars.align_z
+        alignX = context.window_manager.FDAlign_vars.align_x
+        alignY = context.window_manager.FDAlign_vars.align_y
+        alignZ = context.window_manager.FDAlign_vars.align_z
         
         obj = bpy.context.scene.objects.active
         object_details = bounds(obj)
@@ -83,36 +77,45 @@ class AlignCursor(bpy.types.Operator):
         bpy.context.space_data.cursor_location[2] = zval       
         
         print("The Values are:"+str(xval))
-   
-        #unregister()
         return {'FINISHED'}
- 
-class AlignCursorPanel(bpy.types.Panel):
-    bl_idname = "object.alignpanel"
-    bl_label = "Align Cursor Tools"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOL_PROPS"
-    bl_category = "AlignCursorPanel"
- 
+
+class CustomDrawOperator(bpy.types.Operator):
+    bl_idname = "object.custom_draw"
+    bl_label = "Simple Modal Operator"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    filepath = bpy.props.StringProperty(subtype="FILE_PATH")
+
+    my_float = bpy.props.FloatProperty(name="Float")
+    my_bool = bpy.props.BoolProperty(name="Toggle Option")
+    my_string = bpy.props.StringProperty(name="String Value")
+    
+    def execute(self, context):
+        print("Test", self)
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+  
+
     def draw(self, context):
-        self.layout.label('Align cursor to:')
-        row = self.layout.row()
+        layout = self.layout
+        layout.label('Align cursor to:')
+        row = layout.row()
         row.label('X:')
-        row.prop(context.window_manager.interface_vars, 'align_x', expand=True)
-        row = self.layout.row()
+        row.prop(context.window_manager.FDAlign_vars, 'align_x', expand=True)
+        row = layout.row()
         row.label('Y:')
-        row.prop(context.window_manager.interface_vars, 'align_y', expand=True)
-        row = self.layout.row()
+        row.prop(context.window_manager.FDAlign_vars, 'align_y', expand=True)
+        row = layout.row()
         row.label('Z:')
-        row.prop(context.window_manager.interface_vars, 'align_z', expand=True)
-        row = self.layout.row()
+        row.prop(context.window_manager.FDAlign_vars, 'align_z', expand=True)
+        self.layout.separator() 
+        row = layout.row()    
         row.operator("object.fd_align", text="Align")
         row.operator("object.origin_set",text="Objectorigin to Cursor").type='ORIGIN_CURSOR'
-        self.layout.separator()
-        self.layout.operator("object.close_panel", text="Close")
-
-
-
+        self.layout.separator()     
 
 def bounds(obj, local=False):
 
@@ -140,24 +143,15 @@ def bounds(obj, local=False):
     o_details = collections.namedtuple('object_details', 'x y z')
     return o_details(**originals)
 
-    
 def register():
-    bpy.utils.register_class(ClosePanel)
+    bpy.utils.register_class(CustomDrawOperator)
     bpy.utils.register_class(AlignCursor)
-    bpy.utils.register_class(AlignCursorPanel)    
-    bpy.utils.register_class(InterfaceVars)
-    bpy.types.WindowManager.interface_vars = bpy.props.PointerProperty(type=InterfaceVars)
-    
-    
-def unregister():
-    del bpy.types.WindowManager.interface_vars
-    bpy.utils.unregister_class(ClosePanel)
-    bpy.utils.unregister_class(InterfaceVars)
-    bpy.utils.unregister_class(AlignCursorPanel)
-    bpy.utils.unregister_class(AlignCursor)
+    bpy.utils.register_class(FDAlignVars)
+    bpy.types.WindowManager.FDAlign_vars = bpy.props.PointerProperty(type=FDAlignVars)
     
 
-        
+# test call
 if __name__ == "__main__":
     register()
-    
+    bpy.ops.object.custom_draw('INVOKE_DEFAULT')
+    #bpy.ops.object.custom_draw('EXEC_DEFAULT')
