@@ -42,12 +42,16 @@ class fdMenu(bpy.types.Menu):
     
     def draw(self, context):
         layout = self.layout
+        layout.operator("view3d.snap_cursor_to_selected", icon='CURSOR')
+        layout.operator("object.origin_set", icon='ROTATE').type='ORIGIN_CURSOR'
         layout.separator()
+        
+
       
         layout.operator("mesh.faces_select_linked_flat")
         global arr_scripts, fd_scriptPath
         for script in arr_scripts:
-            if "seperator" in script: 
+            if "seperator" in script:
                 layout.separator()
             else:
                 layout.operator("view3d.fd_run_script",text=script[4:-3]).scriptName=fd_scriptPath+"\\"+script
